@@ -8,6 +8,9 @@
 #include <steem/plugins/chain/chain_plugin.hpp>
 #include <steem/plugins/json_rpc/json_rpc_plugin.hpp>
 
+#include <future>
+#include <thread>
+
 namespace steem {
 
 using chain::account_history_object;
@@ -26,6 +29,7 @@ class api_impl
       DECLARE_API_IMPL(
          (get_ops_in_block)
          (get_account_history)
+         (test_parallel_get_ops_in_block)
       )
 
       const rocksdb::rocksdb_plugin& _dataSource;
@@ -62,6 +66,59 @@ DEFINE_API_IMPL( api_impl, get_account_history )
    return result;
 }
 
+DEFINE_API_IMPL (api_impl, test_parallel_get_ops_in_block)
+{
+   test_parallel_get_ops_in_block_return retval;
+
+   unsigned int blocksPerThread = args.totalBlockNumber / args.threadNumber;
+
+   std::vector<std::thread> threadGroup;
+   unsigned int startBlock = 0;
+   std::promise<void> startProcessingTrigger;
+   std::shared_future<void> startProcessing(startProcessingTrigger.get_future());
+   for(unsigned int i = 1; i <= args.threadNumber; ++i)
+   {
+      unsigned int endBlock = startBlock + blocksPerThread;
+      if(i == args.threadNumber)
+         endBlock += args.totalBlockNumber % args.threadNumber;
+
+      threadGroup.emplace_back([i, startBlock, endBlock, &args, &startProcessing, this]()
+      {
+         ilog("Thread # ${t} waits for green light...", ("t", i));
+         startProcessing.wait();
+         ilog("Starting working thread # ${t} to process blocks from range: [${s}:${e}]",
+            ("t", i)("s", startBlock)("e", endBlock));
+
+         for(unsigned int r = 0; r < args.callRepeatNumber; ++r)
+         {
+            for(unsigned int b = startBlock; b < endBlock; ++b)
+            {
+               get_ops_in_block_args a;
+               a.block_num = b;
+               a.only_virtual = false;
+               get_ops_in_block(a);
+            }
+         }
+
+         ilog("Working thread # ${t} finished processing blocks from range: [${s}:${e}]",
+            ("t", i)("s", startBlock)("e", endBlock));
+      });
+
+      startBlock += blocksPerThread;
+   }
+
+   ilog("Starting worker threads...");
+   startProcessingTrigger.set_value();
+
+   for(auto& t : threadGroup)
+   {
+      if(t.joinable())
+        t.join();
+   }
+
+   return retval;
+}
+
 } // detail
 
 rocksdb_api::rocksdb_api(const rocksdb::rocksdb_plugin& dataSource) : my( new detail::api_impl(dataSource) )
@@ -75,6 +132,7 @@ rocksdb_api::~rocksdb_api() {}
 DEFINE_LOCKLESS_APIS( rocksdb_api,
    (get_ops_in_block)
    (get_account_history)
+   (test_parallel_get_ops_in_block)
 )
 
 } } } // steem::plugins::rocksdb

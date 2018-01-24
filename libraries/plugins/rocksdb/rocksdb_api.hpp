@@ -119,6 +119,20 @@ struct get_account_history_return
    std::map< uint32_t, api_operation_object > history;
 };
 
+struct test_parallel_get_ops_in_block_args
+{
+   /// Number of blocks to call `get_ops_in_block` for. 
+   unsigned int totalBlockNumber = 5000000;
+   /// Number of repeated calls to be made in one thread 
+   unsigned int callRepeatNumber = 1;
+   unsigned int threadNumber = 4;
+};
+
+struct test_parallel_get_ops_in_block_return
+{
+   unsigned int dummy = 0;
+};
+
 class rocksdb_api final
 {
    public:
@@ -128,6 +142,7 @@ class rocksdb_api final
       DECLARE_API(
          (get_ops_in_block)
          (get_account_history)
+         (test_parallel_get_ops_in_block)
       )
 
    private:
@@ -154,3 +169,9 @@ FC_REFLECT( steem::plugins::rocksdb::get_account_history_args,
 
 FC_REFLECT( steem::plugins::rocksdb::get_account_history_return,
    (history) )
+
+FC_REFLECT( steem::plugins::rocksdb::test_parallel_get_ops_in_block_args,
+   (callRepeatNumber)(totalBlockNumber)(threadNumber) )
+
+FC_REFLECT( steem::plugins::rocksdb::test_parallel_get_ops_in_block_return,
+   (dummy) )
