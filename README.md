@@ -1,28 +1,16 @@
-# Introducing Steem (beta)
+# Introducing Webblen
 
-Steem is a Delegated Proof of Stake blockchain that uses a "Proof of Brain" social consensus algorithm for token allocation.
+Webblen uses STEEM's delegated Proof of Stake blockchain that uses a "Proof of Attendance" social consensus algorithm for token allocation.
 
-  - Currency symbol STEEM.
+  - Currency symbol WBLN.
   - 10% APR inflation narrowing to 1% APR over 20 years.
   - 75% of inflation to "Proof of Brain" social consensus algorithm.
   - 15% of inflation to stake holders.
   - 10% of inflation to block producers.
 
-# Public Announcement & Discussion
+## Contributing to this Project
+1. Join webblenIO on Discord: https://discord.gg/5cxGQmt or Telegram: https://t.me/joinchat/AAAAAEwPh5GOiHAZQ-QeJg
 
-Steem was announced on the
-[Bitcointalk forum](https://bitcointalk.org/index.php?topic=1410943.new) prior to
-the start of any mining.
-
-# No Support & No Warranty
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-IN THE SOFTWARE.
 
 # Whitepaper
 
@@ -34,7 +22,7 @@ Just want to get up and running quickly? We have pre-built docker images for you
 
 # Building
 
-We strongly recommend using one of our pre-built Docker images or using Docker to build Steem. Both of these processes are described in the [quickstart guide](https://github.com/steemit/steem/blob/master/doc/exchangequickstart.md).
+It's recommended using one of STEEM's pre-built Docker images or using Docker to build Steem. Both of these processes are described in the [quickstart guide](https://github.com/steemit/steem/blob/master/doc/exchangequickstart.md).
 
 If you would still like to build from source, we do have [build instructions](https://github.com/steemit/steem/blob/master/doc/building.md) for Linux (Ubuntu LTS) and macOS X.
 
